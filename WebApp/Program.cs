@@ -8,6 +8,12 @@ using WebApp.Settings;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddAuthentication().AddFacebook(options =>
+{
+    options.AppId = builder.Configuration["FacebookAppId"];
+    options.AppSecret = builder.Configuration["FacebookAppSecret"];
+});
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
@@ -40,6 +46,7 @@ builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SMTP"
 builder.Services.AddSingleton<IEmailService, EmailService>();
 
 builder.Services.AddRazorPages();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -60,5 +67,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapControllers();
 
 app.Run();

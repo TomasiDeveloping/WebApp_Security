@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -15,10 +16,17 @@ namespace WebApp.Pages.Account
         {
             _signInManager = signInManager;
         }
-        [BindProperty] public CredentialViewModel Credential { get; set; }
 
-        public void OnGet()
+        [BindProperty] 
+        public CredentialViewModel Credential { get; set; }
+
+        [BindProperty] 
+        public IEnumerable<AuthenticationScheme> ExternalLoginProviders { get; set; }
+
+
+        public async Task OnGetAsync()
         {
+            this.ExternalLoginProviders = await _signInManager.GetExternalAuthenticationSchemesAsync();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -53,6 +61,14 @@ namespace WebApp.Pages.Account
 
                 return Page();
             }
+        }
+
+        public IActionResult OnPostLoginExternally(string provider)
+        {
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, null);
+            properties.RedirectUri = Url.Action("ExternalLoginCallback", "Account");
+
+            return Challenge(properties, provider);
         }
     }
 
