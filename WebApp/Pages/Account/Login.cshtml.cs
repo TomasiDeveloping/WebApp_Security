@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebApp.Data.Account;
 
@@ -29,10 +30,17 @@ namespace WebApp.Pages.Account
 
             if (result.Succeeded)
             {
-                return Redirect("/Index");
+                return RedirectToPage("/Index");
             }
             else
             {
+                if (result.RequiresTwoFactor)
+                {
+                    return RedirectToPage("/Account/LoginTwoFactorWithAuthenticator", new
+                    {
+                        RememberMe = this.Credential.RememberMe
+                    });
+                }
                 if (result.IsLockedOut)
                 {
 

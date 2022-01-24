@@ -12,18 +12,18 @@ builder.Services.AddAuthentication(options =>
         options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
     })
     .AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters()
     {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey =
-            new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("SecretKey"))),
-        ValidateLifetime = false,
-        ValidateAudience = false,
-        ValidateIssuer = false,
-        ClockSkew = TimeSpan.Zero
-    };
-});
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey =
+                new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("SecretKey"))),
+            ValidateLifetime = false,
+            ValidateAudience = false,
+            ValidateIssuer = false,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 
 builder.Services.AddAuthorization(options =>
 {
